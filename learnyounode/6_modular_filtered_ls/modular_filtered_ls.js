@@ -1,21 +1,24 @@
 var fs = require('fs'),
     path = require('path');
-    
+
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
 
-var filepath = process.argv[2],
-    filemask = process.argv[3];
-fs.readdir(filepath, function callback(err, list) {
-    if(!err) {
-        //console.log(list);
+module.exports = function (filepath, filemask, callback) {
+    fs.readdir(filepath, function (err, list) {
+        if(err) {
+            return callback(err);
+        }
+        
+        var data = [];
+        
         for (var i = 0; i < list.length; i++) {
             if(path.extname(list[i]).endsWith(filemask)) {
-                console.log(list[i]);
+                data.push(list[i]);
             }
         }
-    } else {
-        //console.log('err: ' + err);
-    }
-});
+        
+        return callback(null, data);
+    });
+};
